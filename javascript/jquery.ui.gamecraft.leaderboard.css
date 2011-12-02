@@ -1,0 +1,21 @@
+.rank-item-hover {
+	background-color: #FCEFA1;
+	cursor : pointer;
+}
+.leaderboard-title {
+	background-color: #B0B0B0;
+	text-align: center;
+}
+
+.leaderboard-body {
+	background-color : #CCCCCC;
+}
+
+.leaderboard-ranklist-item {
+	margin-top: 0.5em;
+	margin-bottom : 0.5em;
+}
+
+.leaderboard-item-local-paint {
+	background-color : red;
+}
