@@ -39,7 +39,9 @@
 			localTo : {
 				uniqueField : null,
 				fieldValue : null,
-				filteringFunction : null,
+				filteringFunction : function(constantItem, item) {
+					return true;
+				},
 				interval : -1,
 				paint : false
 			},
