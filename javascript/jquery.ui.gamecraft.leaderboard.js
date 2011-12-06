@@ -123,11 +123,14 @@
 			var $element = $(ranking);
 			self._helper.ranklistElement = $element;
 			self._helper.headerElement = $(header);
+			$element.html("");
+
+			self._setupDataForRender(self, options);
 			self._renderRanklist(self, options, $element);
 		},
-		_renderRanklist : function(self, options, $element) {
-			$element.html("");
-			var local = options.localTo, startIndex = 0, endIndex = self._sortedData.length, foundItemIndex = -1, localFlag = false;
+		_setupDataForRender : function(self, options) {
+			console.log("Seting up data before render");
+			var local = options.localTo, startIndex = self._startIndex, endIndex = self._sortedData.length, foundItemIndex = self._foundItemIndex, localFlag = self._localFlag;
 
 			if(local.uniqueField !== null && local.fieldValue !== null && local.interval > 0) {
 				localFlag = true;
@@ -141,15 +144,22 @@
 						break;
 					}
 				}
-				if(local.filteringFunction !== null) {
-					// we have filtering function O_O
-					var foundItem = self._sortedData[foundItemIndex];
-					
-				} else {
-					
-				}
 			}
+			self._startIndex = startIndex;
+			self._endIndex = endIndex;
+			self._localFlag = localFlag;
+			self._foundItemIndex = foundItemIndex;
+			console.log(startIndex, endIndex);
+			if(local.filteringFunction !== null) {
+				// we have filtering function O_O
+				var foundItem = self._sortedData[foundItemIndex];
 
+			} else {
+
+			}
+		},
+		_renderRanklist : function(self, options, $element) {
+			var startIndex = self._startIndex, endIndex = self._endIndex, localFlag = self._localFlag, foundItemIndex = self._foundItemIndex;
 			console.log(startIndex, endIndex);
 			options.topPlayers = Math.abs(options.topPlayers);
 
@@ -180,7 +190,7 @@
 
 				$element.append(row);
 
-				if(i === foundItemIndex) {
+				if(localFlag === true && i === foundItemIndex) {
 					$(row).addClass(self._helper.cssStyleClasses.leaderboard_item_local_paint);
 				}
 
@@ -196,6 +206,11 @@
 			this.element.remove();
 		},
 		_sortedData : [],
+		_filteredData : []/*used when filterFunction is given for the local leaderboard*/,
+		_startIndex : 0,
+		_endIndex : 0,
+		_localFlag : false,
+		_foundItemIndex : -1,
 		_helper : {
 			pixels : function(value) {
 				return value + "px";
