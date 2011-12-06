@@ -59,7 +59,14 @@
 			}
 
 			var _sortedData = o.data.sort(_sortFunction);
-
+			
+			_sortedData = _sortedData.map(function(item, index) {
+				return {
+					place : index + 1,
+					data : item
+				}
+			});
+			console.log(_sortedData);
 			// trigger event and pass the sorted data
 			self._trigger("data_sorted", null, _sortedData);
 
@@ -134,7 +141,7 @@
 			if(local.uniqueField !== null && local.fieldValue !== null && local.interval > 0) {
 				localFlag = true;
 				for( j = 0, len = self._sortedData.length; j < len; ++j) {
-					if(self._sortedData[j][local.uniqueField] === local.fieldValue) {
+					if(self._sortedData[j].data[local.uniqueField] === local.fieldValue) {
 						foundItemIndex = j;
 						startIndex = j - local.interval;
 						startIndex = startIndex <= 0 ? 0 : startIndex;
@@ -145,30 +152,23 @@
 				}
 
 				if( typeof local.filterFunction !== "undefined") {
-					for( i = 0, len = self._sortedData.length; i != foundItemIndex && i < len; ++i) {
-						if(local.filterFunction(self._sortedData[foundItemIndex], self._sortedData[i])) {
-							self._filteredData.push(self._sortedData[foundItemIndex]);
+					for( i = 0, len = self._sortedData.length; i < len; ++i) {
+						if(local.filterFunction(self._sortedData[foundItemIndex].data, self._sortedData[i].data)) {
+							self._filteredData.push(self._sortedData[foundItemIndex].data);
 						}
 					}
 				}
-			} // end of local if
+			}// end of local if
 
 			self._startIndex = startIndex;
 			self._endIndex = endIndex;
 			self._localFlag = localFlag;
 			self._foundItemIndex = foundItemIndex;
 			console.log(startIndex, endIndex);
-
-			if(local.filterFunction !== null) {
-				// we have filtering function O_O
-				var foundItem = self._sortedData[foundItemIndex];
-
-			} else {
-
-			}
 		},
 		_renderRanklist : function(self, options) {
-			var startIndex = self._startIndex, endIndex = self._endIndex, localFlag = self._localFlag, foundItemIndex = self._foundItemIndex, $element = self._helper.ranklistElement;
+
+			var startIndex = self._startIndex, endIndex = self._endIndex, localFlag = self._localFlag, foundItemIndex = self._foundItemIndex, $element = self._helper.ranklistElement, local = options.localTo;
 			$element.html("");
 			options.topPlayers = Math.abs(options.topPlayers);
 
@@ -180,12 +180,12 @@
 				var row = $(document.createElement("div")).css({
 					"width" : "100%",
 					"text-align" : options.labelPlacement
-				}).append(options.labelFunction(self._sortedData[i], place)).addClass(self._helper.cssStyleClasses.leaderboard_ranklist_item);
+				}).append(options.labelFunction(self._sortedData[i].data, place)).addClass(self._helper.cssStyleClasses.leaderboard_ranklist_item);
 
 				// attach click handler to each rank element
 				$(row).bind("click", {
 					context : self,
-					item : self._sortedData[i],
+					item : self._sortedData[i].data,
 					selectedIndex : i,
 					place : place
 				}, function(event) {
@@ -199,7 +199,7 @@
 
 				$element.append(row);
 
-				if(localFlag === true && i === foundItemIndex) {
+				if(localFlag === true && self._sortedData[i].data[local.uniqueField] === self._sortedData[foundItemIndex].data[local.uniqueField]) {
 					$(row).addClass(self._helper.cssStyleClasses.leaderboard_item_local_paint);
 				}
 
@@ -210,6 +210,13 @@
 					$(this).removeClass(self._helper.cssStyleClasses.rank_item_hover);
 				});
 			}
+		},
+		_determineDataSource : function(self) {
+			if(self._filteredData.length === 0) {
+				return self._sortedData;
+			}
+
+			return self._filteredData;
 		},
 		destroy : function() {
 			this.element.remove();
