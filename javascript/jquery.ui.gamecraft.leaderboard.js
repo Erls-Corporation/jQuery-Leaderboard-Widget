@@ -67,28 +67,30 @@
 			self._render(self, o, el);
 		},
 		_setOption : function(option, value) {
-			$.Widget.prototype._setOption.apply(this, arguments);
+			var self = this;
+			$.Widget.prototype._setOption.apply(self, arguments);
 
 			if(option === "localTo") {
-				this._renderRanklist(this, this.options, this._helper.ranklistElement);
+				self._setupDataForRender(self, self.options);
+				self._renderRanklist(self, self.options);
 				return;
 			}
 
 			if(option === "width") {
 				value = Math.abs(value);
-				$(this.element).css({
-					width : this._helper.pixels(value)
+				$(self.element).css({
+					width : self._helper.pixels(value)
 				})
 				return;
 			}
 
 			if(option === "height") {
 				value = Math.abs(value);
-				$(this.element).css({
-					height : this._helper.pixels(value)
+				$(self.element).css({
+					height : self._helper.pixels(value)
 				})
-				var calculatedHeight = value - this._helper.headerElement.height();
-				this._helper.ranklistElement.css({
+				var calculatedHeight = value - self._helper.headerElement.height();
+				self._helper.ranklistElement.css({
 					height : calculatedHeight
 				})
 				return;
@@ -105,28 +107,24 @@
 			 * Render the header where the title is put
 			 */
 			var header = $(document.createElement("div")).append(options.title).addClass(self._helper.cssStyleClasses.leaderboard_title);
-
 			$(element).append(header);
 
 			if( typeof self._sortedData === "undefined" || self._sortedData.length === 0) {
 				return;
 			}
-			/**
-			 * Render the sorted data
-			 */
+
 			var ranking = $(document.createElement("div")).css({
 				overflow : "scroll",
 				width : "100%",
 				height : self._helper.pixels(options.height - $(header).height()),
 			}).addClass(self._helper.cssStyleClasses.leaderboard_ranklist);
 			$(element).append(ranking);
-			var $element = $(ranking);
-			self._helper.ranklistElement = $element;
-			self._helper.headerElement = $(header);
-			$element.html("");
 
+			self._helper.ranklistElement = $(ranking);
+			self._helper.headerElement = $(header);
+			
 			self._setupDataForRender(self, options);
-			self._renderRanklist(self, options, $element);
+			self._renderRanklist(self, options);
 		},
 		_setupDataForRender : function(self, options) {
 			console.log("Seting up data before render");
@@ -158,9 +156,9 @@
 
 			}
 		},
-		_renderRanklist : function(self, options, $element) {
-			var startIndex = self._startIndex, endIndex = self._endIndex, localFlag = self._localFlag, foundItemIndex = self._foundItemIndex;
-			console.log(startIndex, endIndex);
+		_renderRanklist : function(self, options) {
+			var startIndex = self._startIndex, endIndex = self._endIndex, localFlag = self._localFlag, foundItemIndex = self._foundItemIndex, $element = self._helper.ranklistElement;
+			$element.html("");
 			options.topPlayers = Math.abs(options.topPlayers);
 
 			for(var i = startIndex, top = options.topPlayers; i < endIndex; ++i) {
