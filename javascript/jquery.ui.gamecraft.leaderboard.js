@@ -39,7 +39,7 @@
 			localTo : {
 				uniqueField : null,
 				fieldValue : null,
-				filteringFunction : function(constantItem, item) {
+				filterFunction : function(constantItem, item) {
 					return true;
 				},
 				interval : -1,
@@ -122,17 +122,18 @@
 
 			self._helper.ranklistElement = $(ranking);
 			self._helper.headerElement = $(header);
-			
+
 			self._setupDataForRender(self, options);
 			self._renderRanklist(self, options);
 		},
 		_setupDataForRender : function(self, options) {
-			console.log("Seting up data before render");
 			var local = options.localTo, startIndex = self._startIndex, endIndex = self._sortedData.length, foundItemIndex = self._foundItemIndex, localFlag = self._localFlag;
 
+			// array indexes
+			var j, i, len;
 			if(local.uniqueField !== null && local.fieldValue !== null && local.interval > 0) {
 				localFlag = true;
-				for(var j = 0, len = self._sortedData.length; j < len; ++j) {
+				for( j = 0, len = self._sortedData.length; j < len; ++j) {
 					if(self._sortedData[j][local.uniqueField] === local.fieldValue) {
 						foundItemIndex = j;
 						startIndex = j - local.interval;
@@ -142,13 +143,23 @@
 						break;
 					}
 				}
-			}
+
+				if( typeof local.filterFunction !== "undefined") {
+					for( i = 0, len = self._sortedData.length; i != foundItemIndex && i < len; ++i) {
+						if(local.filterFunction(self._sortedData[foundItemIndex], self._sortedData[i])) {
+							self._filteredData.push(self._sortedData[foundItemIndex]);
+						}
+					}
+				}
+			} // end of local if
+
 			self._startIndex = startIndex;
 			self._endIndex = endIndex;
 			self._localFlag = localFlag;
 			self._foundItemIndex = foundItemIndex;
 			console.log(startIndex, endIndex);
-			if(local.filteringFunction !== null) {
+
+			if(local.filterFunction !== null) {
 				// we have filtering function O_O
 				var foundItem = self._sortedData[foundItemIndex];
 
