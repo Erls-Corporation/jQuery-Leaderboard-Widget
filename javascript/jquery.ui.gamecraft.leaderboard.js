@@ -147,7 +147,7 @@
 				if(endIndex > len) {
 					endIndex = len;
 				}
-				
+
 				if( typeof (local.filterFunction) !== "undefined" && local.filterFunction !== null) {
 					startIndex = 0;
 					for( i = 0, len = self._sortedData.length; i < len; ++i) {
@@ -155,8 +155,11 @@
 							self._filteredData.push(self._sortedData[i]);
 						}
 					}
-					endIndex = self._filteredData.length;
-					console.log("Filtered data", self._filteredData);
+					endIndex = local.interval + 1;
+					len = self._filteredData.length;
+					if(endIndex > len) {
+						endIndex = len;
+					}
 				}
 
 			}// end of local if
