@@ -39,9 +39,7 @@
 			localTo : {
 				uniqueField : null,
 				fieldValue : null,
-				filterFunction : function(constantItem, item) {
-					return true;
-				},
+				filterFunction : null,
 				interval : -1,
 				paint : false
 			},
@@ -59,7 +57,6 @@
 			}
 
 			var _sortedData = o.data.sort(_sortFunction);
-			
 			_sortedData = _sortedData.map(function(item, index) {
 				return {
 					place : index + 1,
@@ -137,21 +134,21 @@
 			var local = options.localTo, startIndex = self._startIndex, endIndex = self._sortedData.length, foundItemIndex = self._foundItemIndex, localFlag = self._localFlag;
 
 			// array indexes
-			var j, i, len;
+			var j, i, len = self._sortedData.length;
 			if(local.uniqueField !== null && local.fieldValue !== null && local.interval > 0) {
 				localFlag = true;
-				for( j = 0, len = self._sortedData.length; j < len; ++j) {
-					if(self._sortedData[j].data[local.uniqueField] === local.fieldValue) {
-						foundItemIndex = j;
-						startIndex = j - local.interval;
-						startIndex = startIndex <= 0 ? 0 : startIndex;
-						endIndex = j + 1 + local.interval;
-						endIndex = endIndex >= len ? len : endIndex;
-						break;
-					}
+				// there are bugs in the calculations
+				foundItemIndex = self._helper.findLocalItem(self, local);
+				startIndex = foundItemIndex - local.interval;
+				if(startIndex < 0) {
+					startIndex = 0;
 				}
-				// can be merged with the cycle above
-				if( typeof local.filterFunction !== "undefined") {
+				endIndex = foundItemIndex + 1 + local.interval;
+				if(endIndex > len) {
+					endIndex = len;
+				}
+				
+				if( typeof (local.filterFunction) !== "undefined" && local.filterFunction !== null) {
 					startIndex = 0;
 					for( i = 0, len = self._sortedData.length; i < len; ++i) {
 						if(local.filterFunction(self._sortedData[foundItemIndex].data, self._sortedData[i].data)) {
@@ -159,10 +156,11 @@
 						}
 					}
 					endIndex = self._filteredData.length;
+					console.log("Filtered data", self._filteredData);
 				}
-				
-				console.log("Filtered data", self._filteredData);
+
 			}// end of local if
+
 			self._startIndex = startIndex;
 			self._endIndex = endIndex;
 			self._localFlag = localFlag;
@@ -216,7 +214,8 @@
 			}
 		},
 		_determineDataSource : function(self) {
-			if(self._localFlag === false) {
+			var local = self.options.localTo;
+			if( typeof (local.filterFunction) === "undefined" || local.filterFunction === null) {
 				return self._sortedData;
 			}
 
@@ -249,6 +248,24 @@
 
 					return (reverse * ((a < b) ? -1 : (a > b) ? +1 : 0));
 				}
+			},
+			findLocalItem : function(self, localOptions) {
+				// binary search implementation
+				var low = 0, high = self._sortedData.length - 1, mid = -1, midItem = null;
+
+				while(low <= high) {
+					mid = Math.floor(low + (high - low) / 2);
+					midItem = self._sortedData[mid];
+					if(midItem.data[localOptions.uniqueField] === localOptions.fieldValue) {
+						return mid;
+					} else if(midItem.data[localOptions.uniqueField] < localOptions.fieldValue) {
+						high = mid - 1;
+					} else {
+						low = mid + 1;
+					}
+				}
+				return -1;
+
 			},
 			ranklistElement : null,
 			headerElement : null,
