@@ -48,11 +48,13 @@ $(document).ready(function() {
 			};
 			$("body").append($(document.createElement("div")).attr("id", this.containerId));
 			this.leaderboard = $("#" + this.containerId).leaderboard(this.options);
+		},
+		teardown : function() {
+			$("#" + this.containerId).leaderboard("destroy");
 		}
 	});
 
 	test("Testing if data is filtered correctly", function() {
 		var displayedElements = $("#" + this.containerId).children(".leaderboard-ranklist").children();
-		//ok(displayedElements.length > 0);
 	});
 })

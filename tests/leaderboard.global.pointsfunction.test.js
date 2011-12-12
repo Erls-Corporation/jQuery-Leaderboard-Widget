@@ -54,7 +54,6 @@ $(document).ready(function() {
 			this.leaderboard = $("#" + this.containerId).leaderboard(this.options);
 		},
 		teardown : function() {
-			console.log("tearing down");
 			$("#" + this.containerId).leaderboard("destroy");
 		}
 	});

@@ -1,0 +1,61 @@
+{ "information" :
+[
+	{
+		"name" : "Radoslav Georgiev",
+		"books" : [
+			{
+				"title" : "Design Patterns"
+			},
+			{
+				"title" : "Programming with JavaScript"
+			},
+			{
+				"title" : "Programming with PHP"
+			},
+			{
+				"title" : "NodeJS Up and Running"
+			}
+		]
+	},
+	{
+		"name" : "Vitaliy Filipov",
+		"books" : [
+			{
+				"title" : "The Art of Game Design"
+			},
+			{
+				"title" : "Gamification By Design"
+			}
+		]
+	},
+	{
+		"name" : "Dimitar Karamanchev",
+		"books": [
+			{
+				"title" : "Gamification By Design"
+			},
+			{
+				"title" : "Programming with .NET framework"
+			},
+			{
+				"title" : "Photo Reading"
+			},
+			{
+				"title" : "Natural Brilliance"
+			}
+		]
+	},
+	{
+		"name" : "Stefan Kanev",
+		"books" : [
+			{
+				"title" : "Ruby on Rails for Pros"
+			},
+			{
+				"title" : "Gamification By Design"
+			}
+		]
+	
+	}	
+]
+}

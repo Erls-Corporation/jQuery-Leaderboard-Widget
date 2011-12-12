@@ -1,7 +1,3 @@
-// ideas :
-// add crown icon for #1
-
-// todo tommorow : create a class field for all CSS classes
 /**
  * @author GameCraft | RadoRado | http://game-craft.com/
  * @version 0.1
@@ -149,6 +145,7 @@
 				}
 
 				if( typeof (local.filterFunction) !== "undefined" && local.filterFunction !== null) {
+					self._filteredData = [];
 					startIndex = 0;
 					for( i = 0, len = self._sortedData.length; i < len; ++i) {
 						if(local.filterFunction(self._sortedData[foundItemIndex].data, self._sortedData[i].data)) {
