@@ -133,7 +133,6 @@
 			var j, i, len = self._sortedData.length;
 			if(local.uniqueField !== null && local.fieldValue !== null && local.interval > 0) {
 				localFlag = true;
-				// there are bugs in the calculations
 				foundItemIndex = self._helper.findLocalItem(self, local);
 				startIndex = foundItemIndex - local.interval;
 				if(startIndex < 0) {
@@ -148,6 +147,7 @@
 					self._filteredData = [];
 					startIndex = 0;
 					for( i = 0, len = self._sortedData.length; i < len; ++i) {
+						console.log("Found item index : ", foundItemIndex);
 						if(local.filterFunction(self._sortedData[foundItemIndex].data, self._sortedData[i].data)) {
 							self._filteredData.push(self._sortedData[i]);
 						}
@@ -169,7 +169,6 @@
 		},
 		_renderRanklist : function(self, options) {
 			var data = self._determineDataSource(self);
-			console.log(data);
 			var startIndex = self._startIndex, endIndex = self._endIndex, localFlag = self._localFlag, foundItemIndex = self._foundItemIndex, $element = self._helper.ranklistElement, local = options.localTo;
 			$element.html("");
 			options.topPlayers = Math.abs(options.topPlayers);
@@ -250,7 +249,9 @@
 				}
 			},
 			findLocalItem : function(self, localOptions) {
+				console.log("Searching local item, here is the sorted data : " , self._sortedData);
 				// binary search implementation
+				/*
 				var low = 0, high = self._sortedData.length - 1, mid = -1, midItem = null;
 
 				while(low <= high) {
@@ -262,6 +263,12 @@
 						high = mid - 1;
 					} else {
 						low = mid + 1;
+					}
+				}
+				*/
+				for(var i = 0, len = self._sortedData.length; i < len; i++) {
+					if(self._sortedData[i].data[localOptions.uniqueField] === localOptions.fieldValue) {
+						return i;
 					}
 				}
 				return -1;
