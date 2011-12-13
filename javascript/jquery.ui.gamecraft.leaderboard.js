@@ -71,6 +71,8 @@
 			$.Widget.prototype._setOption.apply(self, arguments);
 
 			if(option === "localTo") {
+				// set up to default, since the localTo can be passed as {} which forces the leaderboard to toggle to global view
+				self._localFlag = false; 
 				self._setupDataForRender(self, self.options);
 				self._renderRanklist(self, self.options);
 				return;
@@ -114,7 +116,7 @@
 			}
 
 			var ranking = $(document.createElement("div")).css({
-				overflow : "scroll",
+				overflow : "hidden",
 				width : "100%",
 				height : self._helper.pixels(options.height - $(header).height()),
 			}).addClass(self._helper.cssStyleClasses.leaderboard_ranklist);
@@ -128,7 +130,6 @@
 		},
 		_setupDataForRender : function(self, options) {
 			var local = options.localTo, startIndex = self._startIndex, endIndex = self._sortedData.length, foundItemIndex = self._foundItemIndex, localFlag = self._localFlag;
-
 			// array indexes
 			var j, i, len = self._sortedData.length;
 			if(local.uniqueField !== null && local.fieldValue !== null && local.interval > 0) {
