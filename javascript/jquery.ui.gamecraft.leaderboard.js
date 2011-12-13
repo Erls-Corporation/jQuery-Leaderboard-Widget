@@ -178,7 +178,6 @@
 				if(localFlag === false && i >= top) {
 					break;
 				}
-				var place = i + 1;
 				var row = $(document.createElement("div")).css({
 					"width" : "100%",
 					"text-align" : options.labelPlacement
@@ -189,7 +188,7 @@
 					context : self,
 					item : data[i].data,
 					selectedIndex : i,
-					place : place
+					place : data[i].place
 				}, function(event) {
 					var widget = event.data.context, itemWrapper = {
 						item : event.data.item,
