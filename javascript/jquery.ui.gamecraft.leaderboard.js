@@ -116,7 +116,7 @@
 			}
 
 			var ranking = $(document.createElement("div")).css({
-				overflow : "hidden",
+				"overflow-y" : "scroll",
 				width : "100%",
 				height : self._helper.pixels(options.height - $(header).height()),
 			}).addClass(self._helper.cssStyleClasses.leaderboard_ranklist);
